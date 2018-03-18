@@ -4,7 +4,7 @@ $testing = null;
 $testid = null;
 if(isset($_GET['testid'])) {
   $testJSON =  file_get_contents('tests/'. 'test' . $_GET['testid'] . '.json');
-  $tests = json_decode($testJSON, 'true');
+  $tests = json_decode($testJSON, true);
   // echo "<pre>";
   // var_dump($test);
   $_SESSION['test'] = $tests;
@@ -13,44 +13,36 @@ if(isset($_GET['testid'])) {
       http_response_code(404);
       echo "<p style='color:red;'>Неверный id теста!</p>";
       exit;
+  }
 }
-}
-
 if (isset($_POST[0])) {
     $tests = $_SESSION['test'];
+    $name = $_POST['name'];
+    $resume1 = 0;
+    $resume2 = 0;
     foreach ($tests as $key => $test) {
         $num = $key + 1;
         if ($_POST[$key] == $test['answer']) {
-            echo "Ответ на ".$num." вопрос верен."."\n";
+          $resume1++;
+            // $resume1 = "Ответ на ".$num." вопрос верен.";
         }
         else {
-            echo "Ответ на ".$num." вопрос не верен."."\n";
+          $resume2++;
+            // $resume2 = "Ответ на ".$num." вопрос не верен.";
         }
     }
-    if(!empty($_POST['name'])){
-      $image = imagecreatetruecolor(800, 600);
-      $back_color = imagecolorallocate($image, 200, 240, 205);
-      $text_color = imagecolorallocate($image, 5, 6, 6);
-      $img_box = imagecreatefrompng(__DIR__ . '/1.png');
-      $font_file = __DIR__ . '/font.ttf';
-
-      if(!file_exists($font_file)){
-        echo 'файл со шрифтом не найден';
-        exit;
-      }
-
-      imagettftext($image, 50, 20, 30, 200, $text_color, $font_file, $_POST['name']);
-      header('Content-Type: image/png');
-      imagepng($image);
-      imagedestroy($image);
-    }
+    $address = "$name,";
+    $_SESSION["lines"][0] = $address;
+    $_SESSION["lines"][1] = "Правильных ответов - $resume1";
+    $_SESSION["lines"][2] = "Неправильных ответов - $resume2";
+    echo "<img src='picture.php'>";
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <title>Форма теста</title>
     <style media="screen">
       form, h1, a {

@@ -12,14 +12,13 @@ if(isset($_FILES['test']['tmp_name']) && file_exists($_FILES['test']['tmp_name']
 				}
 				$i++;
 			}
-
 			if($check == 1){
 				$files = scandir('tests/');
 				$num_test = count($files) - 1;
 				if(move_uploaded_file($_FILES['test']['tmp_name'], 'tests/'. 'test' .$num_test.'.json')){
-					header ('Location:list.php',true,303);;
+					header ('Location:list.php',true,303);
+					exit;
 				}
-
 			}
 			else{
 				echo '<p style="color:red">Ошибка неверная структура данных</p>';
